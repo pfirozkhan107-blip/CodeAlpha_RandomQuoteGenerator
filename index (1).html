@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Random Quote Generator</title>
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--text:#1f2430;--muted:#6b7280;--accent:#4f46e5;--on-accent:#fff;--border:#e3e5ee}
+@media (prefers-color-scheme:dark){:root{--bg:#12141b;--card:#1c1f2a;--text:#eef0f6;--muted:#9aa0b0;--accent:#818cf8;--on-accent:#12141b;--border:#2d3140}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif}
+.wrap{width:100%;max-width:600px;text-align:center}
+h1{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 20px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:40px 30px;box-shadow:0 8px 28px rgba(0,0,0,.07);position:relative}
+.mark{font-size:4rem;line-height:.6;color:var(--accent);height:34px}
+#text{font-size:1.6rem;line-height:1.5;margin:10px 0 22px;transition:opacity .25s}
+#author{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1rem;color:var(--muted);transition:opacity .25s}
+.fade{opacity:0}
+.btns{display:flex;gap:10px;justify-content:center;margin-top:24px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;font-size:.95rem;cursor:pointer;border-radius:10px;padding:11px 22px;border:1px solid var(--border);background:var(--card);color:var(--text)}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
+@media (max-width:480px){#text{font-size:1.3rem}.card{padding:30px 20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Quote of the Moment</h1>
+  <div class="card">
+    <div class="mark">“</div>
+    <div id="text"></div>
+    <div id="author"></div>
+    <div class="btns">
+      <button id="newBtn" class="primary">New Quote</button>
+      <button id="copyBtn">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const quotes = [
+  {t:"The only way to do great work is to love what you do.", a:"Steve Jobs"},
+  {t:"Stay hungry, stay foolish.", a:"Steve Jobs"},
+  {t:"You have to dream before your dreams can come true.", a:"A. P. J. Abdul Kalam"},
+  {t:"Arise, awake, and stop not till the goal is reached.", a:"Swami Vivekananda"},
+  {t:"The journey of a thousand miles begins with a single step.", a:"Lao Tzu"},
+  {t:"Education is the most powerful weapon which you can use to change the world.", a:"Nelson Mandela"},
+  {t:"The only thing we have to fear is fear itself.", a:"Franklin D. Roosevelt"},
+  {t:"Well done is better than well said.", a:"Benjamin Franklin"},
+  {t:"Knowledge is power.", a:"Francis Bacon"},
+  {t:"Happiness depends upon ourselves.", a:"Aristotle"},
+  {t:"The best way to predict the future is to invent it.", a:"Alan Kay"},
+  {t:"Talk is cheap. Show me the code.", a:"Linus Torvalds"},
+  {t:"First, solve the problem. Then, write the code.", a:"John Johnson"},
+  {t:"Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", a:"Martin Fowler"},
+  {t:"Do what you can, with what you have, where you are.", a:"Theodore Roosevelt"}
+];
+
+let current = -1;
+const textEl = document.getElementById("text");
+const authorEl = document.getElementById("author");
+
+function showQuote(){
+  let i;
+  do { i = Math.floor(Math.random() * quotes.length); } while (i === current && quotes.length > 1);
+  current = i;
+  textEl.classList.add("fade"); authorEl.classList.add("fade");
+  setTimeout(() => {
+    textEl.textContent = quotes[i].t;
+    authorEl.textContent = "— " + quotes[i].a;
+    textEl.classList.remove("fade"); authorEl.classList.remove("fade");
+  }, 200);
+}
+
+document.getElementById("newBtn").onclick = showQuote;
+document.getElementById("copyBtn").onclick = function(){
+  const btn = this, q = quotes[current];
+  const done = () => { btn.textContent = "Copied!"; setTimeout(() => btn.textContent = "Copy", 1200); };
+  try { navigator.clipboard.writeText(`"${q.t}" — ${q.a}`).then(done, done); } catch(e) { done(); }
+};
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.tagName !== "BUTTON") showQuote(); });
+
+// Show a random quote immediately when the app opens
+textEl.textContent = ""; showQuote();
+</script>
+</body>
+</html>
